@@ -312,7 +312,18 @@
 
     function requestNotificationPermission() {
         if (!notificationsSupported()) {
-            showStatus('Notifications are not supported in this browser', 5000);
+            // iOS hides the Notification API entirely inside a Safari tab — it
+            // only appears once the app runs from the Home Screen. So "missing
+            // API" on an iPhone usually means "not installed yet", NOT
+            // "unsupported". Say the thing that actually helps.
+            if (isIOS() && !isStandalone()) {
+                showStatus('On iPhone: tap Share ↑ → "Add to Home Screen", then open the app from that icon and tap 🔔 again', 9000);
+            } else if (isIOS()) {
+                // Installed but still no API → the OS is too old.
+                showStatus('Notifications need iOS 16.4 or later. Check Settings → General → Software Update', 8000);
+            } else {
+                showStatus('Notifications are not supported in this browser', 5000);
+            }
             return;
         }
 

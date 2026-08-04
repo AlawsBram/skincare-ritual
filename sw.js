@@ -6,7 +6,7 @@
    otherwise phones will keep serving the old copy from cache.
    ============================================================ */
 
-var CACHE_VERSION = 'skincare-v1';
+var CACHE_VERSION = 'skincare-v2';
 
 var ASSETS = [
     './',
