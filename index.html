@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- viewport-fit=cover is what makes the CSS env(safe-area-inset-*)
+         values non-zero on notched iPhones -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#f7f6f3" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#100f0e" media="(prefers-color-scheme: dark)">
+    <meta name="description" content="Daily skincare routine tracker with notifications and offline support">
+
+    <title>Skincare Ritual</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Apple Web App Meta Tags (for iOS).
+         iOS ignores manifest icons, so the apple-touch-icon must be a real
+         PNG file — a data: URI or an SVG here will not work. -->
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Skincare">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Status Bar (for notification permission status) -->
+    <div id="statusBar" class="status-bar hidden">
+        <span id="statusMessage"></span>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">✨ Skincare Ritual</h1>
+                <p class="subtitle">Elevate your daily skincare</p>
+            </div>
+            <button id="notificationBtn" class="notification-btn" title="Enable notifications">
+                🔔
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Morning Routine Card -->
+            <section class="routine-card morning-card">
+                <div class="routine-header">
+                    <div>
+                        <h2 class="routine-title">☀️ Morning Ritual</h2>
+                        <p class="routine-subtitle">Antioxidant Defense & UV Protection</p>
+                        <p class="routine-time">Alarm: 7:30 AM</p>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <label class="checkbox-item">
+                        <input type="checkbox" class="morning-checkbox" data-product="Vitamin C Cleanser">
+                        <span class="checkbox-custom"></span>
+                        <div class="item-content">
+                            <span class="item-number">1.</span>
+                            <div>
+                                <p class="item-name">Wash</p>
+                                <p class="item-product">Vitamin C Cleanser</p>
+                                <p class="item-detail">30 seconds, pat dry</p>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input type="checkbox" class="morning-checkbox" data-product="Vitamin C Corrector">
+                        <span class="checkbox-custom"></span>
+                        <div class="item-content">
+                            <span class="item-number">2.</span>
+                            <div>
+                                <p class="item-name">Treat</p>
+                                <p class="item-product">Vitamin C Corrector</p>
+                                <p class="item-detail">Wait 2 mins to absorb</p>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input type="checkbox" class="morning-checkbox" data-product="SPF 50 Sunscreen">
+                        <span class="checkbox-custom"></span>
+                        <div class="item-content">
+                            <span class="item-number">3.</span>
+                            <div>
+                                <p class="item-name">Protect</p>
+                                <p class="item-product">SPF 50 Sunscreen</p>
+                                <p class="item-detail">Apply generously</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="routine-progress">
+                    <div class="progress-bar">
+                        <div id="morningProgress" class="progress-fill"></div>
+                    </div>
+                    <p id="morningStatus" class="progress-text">0/3 complete</p>
+                </div>
+            </section>
+
+            <!-- Evening Routine Card -->
+            <section class="routine-card evening-card">
+                <div class="routine-header">
+                    <div>
+                        <h2 class="routine-title">🌙 Evening Ritual</h2>
+                        <p class="routine-subtitle">Exfoliation & Cellular Repair</p>
+                        <p class="routine-time">Alarm: 8:30 PM</p>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <label class="checkbox-item">
+                        <input type="checkbox" class="evening-checkbox" data-product="Vitamin C Cleanser">
+                        <span class="checkbox-custom"></span>
+                        <div class="item-content">
+                            <span class="item-number">1.</span>
+                            <div>
+                                <p class="item-name">Wash</p>
+                                <p class="item-product">Vitamin C Cleanser</p>
+                                <p class="item-detail">Remove dirt & SPF</p>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="checkbox-item">
+                        <input type="checkbox" class="evening-checkbox" data-product="Charcoal Cream">
+                        <span class="checkbox-custom"></span>
+                        <div class="item-content">
+                            <span class="item-number">2.</span>
+                            <div>
+                                <p class="item-name">Renew</p>
+                                <p class="item-product">Charcoal Cream</p>
+                                <p class="item-detail">AHA/BHA - Leave on overnight</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="routine-progress">
+                    <div class="progress-bar">
+                        <div id="eveningProgress" class="progress-fill"></div>
+                    </div>
+                    <p id="eveningStatus" class="progress-text">0/2 complete</p>
+                </div>
+            </section>
+
+            <!-- Info Section -->
+            <section class="info-section">
+                <div class="info-card">
+                    <h3>💡 Tips</h3>
+                    <ul>
+                        <li>Consistency is key—use both routines daily</li>
+                        <li>Morning: protect your skin from the day</li>
+                        <li>Evening: let your skin repair overnight</li>
+                        <li>Enable notifications for gentle reminders</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h3>📱 About This App</h3>
+                    <p>This PWA works offline and saves your progress locally. Install it on your home screen for quick access!</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.85rem; color: #999;">App version 1.0</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Install Prompt (PWA) -->
+    <div id="installPrompt" class="install-prompt hidden">
+        <div class="install-content">
+            <p>Add Skincare Ritual to your home screen?</p>
+            <div class="install-buttons">
+                <button id="installBtn" class="install-button install-primary">Install</button>
+                <button id="dismissBtn" class="install-button install-secondary">Later</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
