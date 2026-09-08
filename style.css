@@ -572,6 +572,536 @@ html[data-theme="dark"] .install-secondary { background: rgba(255, 255, 255, 0.0
     color: var(--ink-faint) !important;
 }
 
+/* ============================================================
+   Reminders — alarm rows, test button, sheet, wheels, overlay
+   ============================================================ */
+
+/* Tappable alarm pills on the routine cards */
+.routine-time-btn {
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+
+.routine-time-btn:active { transform: scale(0.94); }
+
+.routine-time-btn.off {
+    opacity: 0.55;
+    text-decoration: line-through;
+}
+
+/* ---------- Reminders card ---------- */
+
+.reminders-card {
+    padding: 1.6rem 1.4rem 1.4rem;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transition: background-color 0.35s var(--ease);
+}
+
+.reminders-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 640;
+    letter-spacing: -0.02em;
+}
+
+.reminders-subtitle {
+    margin: 0.3rem 0 1.1rem;
+    font-size: 0.87rem;
+    color: var(--ink-soft);
+}
+
+.alarm-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+.alarm-row:active { transform: scale(0.98); }
+
+.alarm-row-left {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-weight: 600;
+}
+
+.alarm-row-icon { font-size: 1.15rem; }
+
+.alarm-row-right {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+.alarm-row-chev {
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--ink-faint);
+}
+
+.alarm-row.off .alarm-row-right span:first-child {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+.test-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.9rem;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--ink);
+    color: var(--bg);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 650;
+    cursor: pointer;
+    transition: transform 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+
+.test-btn:active { transform: scale(0.97); opacity: 0.9; }
+
+.next-alarm {
+    margin: 0.9rem 0 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.reminders-note {
+    margin: 0.5rem 0 0;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--ink-faint);
+    text-align: center;
+}
+
+/* ---------- Countdown banner ---------- */
+
+.countdown-bar {
+    position: fixed;
+    top: calc(0.75rem + var(--safe-top));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 110;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    max-width: 92vw;
+    padding: 0.7rem 0.9rem 0.7rem 1.1rem;
+    border-radius: 100px;
+    background: rgba(28, 27, 25, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: #fff;
+    font-size: 0.85rem;
+    box-shadow: 0 10px 30px rgba(28, 27, 25, 0.22);
+    animation: dropIn 0.45s var(--ease);
+}
+
+.countdown-label b { font-weight: 650; }
+
+.countdown-time {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    background: rgba(255, 255, 255, 0.14);
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+}
+
+.countdown-cancel {
+    border: none;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 650;
+    padding: 0.35rem 0.8rem;
+    cursor: pointer;
+}
+
+.countdown-cancel:active { transform: scale(0.94); }
+
+/* ---------- Alarm sheet (iOS-style) ---------- */
+
+.sheet-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: fadeIn 0.25s ease;
+    padding: 0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.sheet {
+    width: 100%;
+    max-width: 460px;
+    max-height: 92vh;
+    max-height: 92dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 24px 24px 0 0;
+    background: var(--surface);
+    padding: 0.6rem 1.25rem calc(1.5rem + var(--safe-bottom));
+    animation: sheetUp 0.4s var(--ease);
+}
+
+@keyframes sheetUp {
+    from { opacity: 0.4; transform: translateY(60px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 0 0.9rem;
+    position: sticky;
+    top: 0;
+}
+
+.sheet-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+}
+
+.sheet-x {
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(128, 128, 128, 0.16);
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.sheet-x:active { transform: scale(0.9); }
+
+.sheet-check {
+    min-width: 56px;
+    height: 34px;
+    border: none;
+    border-radius: 100px;
+    background: #f5a623;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
+}
+
+.sheet-check:active { transform: scale(0.93); }
+
+/* ---------- Wheel picker ---------- */
+
+.wheel-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0.4rem 0 0.2rem;
+}
+
+.wheel-col {
+    position: relative;
+    flex: 1;
+    max-width: 130px;
+    text-align: center;
+}
+
+.wheel {
+    height: 198px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* Fade the top and bottom rows like a real picker drum */
+    mask-image: linear-gradient(to bottom, transparent, black 28%, black 72%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 28%, black 72%, transparent);
+}
+
+.wheel::-webkit-scrollbar { display: none; }
+
+.wheel-item {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: center;
+    font-size: 1.3rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    opacity: 0.32;
+    transition: opacity 0.2s ease;
+}
+
+.wheel-item.selected {
+    opacity: 1;
+    font-weight: 700;
+}
+
+.wheel-pad { height: 77px; }
+
+.wheel-window {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 77px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(128, 128, 128, 0.16);
+    pointer-events: none;
+}
+
+.wheel-caption {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+}
+
+/* ---------- Quick chips (test timer) ---------- */
+
+.quick-chips {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0.4rem 0 0.2rem;
+}
+
+.quick-chips button {
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: transparent;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 650;
+    padding: 0.45rem 0.95rem;
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+}
+
+.quick-chips button.active {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: transparent;
+}
+
+.quick-chips button:active { transform: scale(0.94); }
+
+/* ---------- Sheet rows (Repeat / Label / Sound / Snooze) ---------- */
+
+.sheet-rows {
+    margin-top: 0.9rem;
+    border-radius: var(--radius-md);
+    background: rgba(128, 128, 128, 0.1);
+    overflow: hidden;
+}
+
+.sheet-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.sheet-row + .sheet-row { border-top: 1px solid var(--line); }
+
+.sheet-value { color: var(--ink-soft); }
+
+.sheet-value-btn {
+    border: none;
+    background: none;
+    color: var(--ink-soft);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.2rem 0;
+}
+
+.sheet-value-btn.accent {
+    color: #e8930c;
+    font-weight: 650;
+}
+
+.sheet-label {
+    border: none;
+    background: none;
+    color: var(--ink-soft);
+    font-family: inherit;
+    font-size: 0.95rem;
+    text-align: right;
+    max-width: 55%;
+    padding: 0.2rem 0;
+}
+
+.sheet-label:focus { outline: none; color: var(--ink); }
+
+/* iOS-style toggle switch */
+.switch {
+    position: relative;
+    width: 52px;
+    height: 31px;
+    border: none;
+    border-radius: 100px;
+    background: rgba(128, 128, 128, 0.35);
+    cursor: pointer;
+    transition: background 0.25s ease;
+    flex-shrink: 0;
+}
+
+.switch .knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    transition: transform 0.25s var(--ease);
+}
+
+.switch.on { background: #34c759; }
+
+.switch.on .knob { transform: translateX(21px); }
+
+.sheet-hint {
+    margin: 0.8rem 0.2rem 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--ink-faint);
+    text-align: center;
+}
+
+/* ---------- Ringing overlay ---------- */
+
+.ring-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 130;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+}
+
+.ring-card {
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    border-radius: 28px;
+    background: var(--surface);
+    padding: 2.2rem 1.5rem 1.8rem;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+    animation: sheetUp 0.45s var(--ease);
+}
+
+.ring-bell {
+    font-size: 3.2rem;
+    animation: bellSwing 1s ease-in-out infinite;
+    transform-origin: top center;
+}
+
+@keyframes bellSwing {
+    0%, 100% { transform: rotate(-14deg); }
+    50% { transform: rotate(14deg); }
+}
+
+.ring-card h2 {
+    margin: 0.8rem 0 0.2rem;
+    font-size: 1.35rem;
+    font-weight: 680;
+    letter-spacing: -0.02em;
+}
+
+.ring-card p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+.ring-buttons {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+}
+
+.ring-btn {
+    flex: 1;
+    padding: 0.9rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s var(--ease);
+}
+
+.ring-btn:active { transform: scale(0.95); }
+
+.ring-stop { background: #e5484d; color: #fff; }
+
+.ring-snooze { background: rgba(128, 128, 128, 0.18); color: var(--ink); }
+
+/* Countdown banner + test button in dark mode (mirror the status bar treatment) */
+html[data-theme="dark"] .countdown-bar { background: rgba(242, 240, 236, 0.94); color: #100f0e; }
+html[data-theme="dark"] .countdown-time { background: rgba(16, 15, 14, 0.1); }
+html[data-theme="dark"] .countdown-cancel { background: rgba(16, 15, 14, 0.1); color: #100f0e; }
+
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme]) .countdown-bar { background: rgba(242, 240, 236, 0.94); color: #100f0e; }
+    html:not([data-theme]) .countdown-time { background: rgba(16, 15, 14, 0.1); }
+    html:not([data-theme]) .countdown-cancel { background: rgba(16, 15, 14, 0.1); color: #100f0e; }
+}
+
 /* ---------- Reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {

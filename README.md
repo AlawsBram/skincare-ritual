@@ -4,10 +4,13 @@ A minimal, installable PWA for tracking a daily morning and evening skincare rou
 
 ## Features
 
-- **Two routine cards** — morning (7:30 AM) and evening (8:30 PM)
+- **Two routine cards** — morning and evening, each with a tappable alarm pill
+- **⏰ Reminders** — adjustable daily alarms in Kenyan time (EAT), iOS-style picker with sound, label, snooze
+- **🧪 Test notifications** — one-tap countdown (e.g. 10 sec) with a live banner, then the full alarm rings
+- **Alarm ringtone** — looping Web Audio alarm (Radial / Chime / Beacon) with vibration, Stop + Snooze overlay
 - **Audio feedback** — a soft chime synthesised with the Web Audio API (no audio files to host)
 - **Local storage** — remembers today's ticks, resets automatically at midnight
-- **Notifications** — daily reminders at 7:30 AM and 8:30 PM
+- **Notifications** — daily banners plus an on-screen ringing overlay
 - **Offline** — works with no connection via a service worker
 - **Installable** — add to your home screen on Android or iOS
 - **Light / dark mode toggle** — header button switches theme, remembers your choice, defaults to your system appearance
@@ -42,7 +45,11 @@ Open the browser console and use the built-in helpers:
 ```js
 skincareDebug.chime()             // play the "done" sound
 skincareDebug.testNotification()  // send a notification now
-skincareDebug.alarmIn(10)         // fire the morning alarm in 10 seconds
+skincareDebug.alarmIn(10)         // ring the full morning alarm in 10 seconds
+skincareDebug.testTimer(10)       // countdown banner, then the test alarm rings
+skincareDebug.previewSound('Beacon')  // audition an alarm sound
+skincareDebug.alarms()            // current daily alarm settings
+skincareDebug.setAlarm('morning', 8, 0)  // change daily alarm to 8:00 AM EAT
 skincareDebug.fakeYesterday()     // then reload to test the midnight reset
 skincareDebug.nextAlarms()        // minutes until each alarm
 skincareDebug.reset()             // clear all saved data
