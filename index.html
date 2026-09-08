@@ -49,6 +49,13 @@
         <span id="statusMessage"></span>
     </div>
 
+    <!-- Countdown banner (test timer) -->
+    <div id="countdownBar" class="countdown-bar hidden">
+        <span class="countdown-label">⏱ <b id="countdownName">Test timer</b></span>
+        <span class="countdown-time" id="countdownTime">00:10</span>
+        <button type="button" id="countdownCancel" class="countdown-cancel">Cancel</button>
+    </div>
+
     <div class="container">
         <!-- Header -->
         <header class="header">
@@ -74,7 +81,7 @@
                     <div>
                         <h2 class="routine-title">☀️ Morning Ritual</h2>
                         <p class="routine-subtitle">Antioxidant Defense & UV Protection</p>
-                        <p class="routine-time">Alarm: 7:30 AM</p>
+                        <button type="button" class="routine-time routine-time-btn" id="morningAlarmPill">Alarm: 7:30 AM</button>
                     </div>
                 </div>
 
@@ -133,7 +140,7 @@
                     <div>
                         <h2 class="routine-title">🌙 Evening Ritual</h2>
                         <p class="routine-subtitle">Exfoliation & Cellular Repair</p>
-                        <p class="routine-time">Alarm: 8:30 PM</p>
+                        <button type="button" class="routine-time routine-time-btn" id="eveningAlarmPill">Alarm: 8:30 PM</button>
                     </div>
                 </div>
 
@@ -173,6 +180,25 @@
                 </div>
             </section>
 
+            <!-- Reminders -->
+            <section class="reminders-card">
+                <div class="reminders-header">
+                    <h2 class="reminders-title">⏰ Reminders</h2>
+                    <p class="reminders-subtitle">Daily alarms in Kenyan time (EAT) — tap a row to change it</p>
+                </div>
+                <button type="button" class="alarm-row" id="morningAlarmRow">
+                    <span class="alarm-row-left"><span class="alarm-row-icon">☀️</span><span>Morning</span></span>
+                    <span class="alarm-row-right"><span id="morningAlarmTime">7:30 AM</span><span class="alarm-row-chev">›</span></span>
+                </button>
+                <button type="button" class="alarm-row" id="eveningAlarmRow">
+                    <span class="alarm-row-left"><span class="alarm-row-icon">🌙</span><span>Evening</span></span>
+                    <span class="alarm-row-right"><span id="eveningAlarmTime">8:30 PM</span><span class="alarm-row-chev">›</span></span>
+                </button>
+                <button type="button" class="test-btn" id="testNotifBtn">🧪 Test notifications</button>
+                <p class="next-alarm" id="nextAlarmLine">Next alarm: —</p>
+                <p class="reminders-note">Alarms ring while the app is open or recently used. They can't fire if the app has been fully closed for a long time — that needs a push server, which is planned next.</p>
+            </section>
+
             <!-- Info Section -->
             <section class="info-section">
                 <div class="info-card">
@@ -187,10 +213,103 @@
                 <div class="info-card">
                     <h3>📱 About This App</h3>
                     <p>This PWA works offline and saves your progress locally. Install it on your home screen for quick access!</p>
-                    <p class="app-version">App version 1.1</p>
+                    <p class="app-version">App version 1.2</p>
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- Alarm sheet (iOS-style Add Alarm) -->
+    <div id="alarmSheet" class="sheet-overlay hidden">
+        <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+            <div class="sheet-header">
+                <button type="button" id="sheetCancel" class="sheet-x" aria-label="Cancel">✕</button>
+                <h2 id="sheetTitle">Add Alarm</h2>
+                <button type="button" id="sheetSave" class="sheet-check" aria-label="Save">✓</button>
+            </div>
+
+            <!-- Daily alarm time picker -->
+            <div id="dailyPicker" class="wheel-row">
+                <div class="wheel-col">
+                    <div class="wheel-window"></div>
+                    <div class="wheel" id="wheelHour"></div>
+                    <span class="wheel-caption">Hour</span>
+                </div>
+                <div class="wheel-col">
+                    <div class="wheel-window"></div>
+                    <div class="wheel" id="wheelMinute"></div>
+                    <span class="wheel-caption">Min</span>
+                </div>
+                <div class="wheel-col">
+                    <div class="wheel-window"></div>
+                    <div class="wheel" id="wheelAmPm"></div>
+                    <span class="wheel-caption"> </span>
+                </div>
+            </div>
+
+            <!-- Test countdown picker -->
+            <div id="testPicker" class="hidden">
+                <div class="quick-chips" id="quickChips">
+                    <button type="button" data-secs="10">10 sec</button>
+                    <button type="button" data-secs="30">30 sec</button>
+                    <button type="button" data-secs="60">1 min</button>
+                    <button type="button" data-secs="300">5 min</button>
+                </div>
+                <div class="wheel-row">
+                    <div class="wheel-col">
+                        <div class="wheel-window"></div>
+                        <div class="wheel" id="wheelTMin"></div>
+                        <span class="wheel-caption">Min</span>
+                    </div>
+                    <div class="wheel-col">
+                        <div class="wheel-window"></div>
+                        <div class="wheel" id="wheelTSec"></div>
+                        <span class="wheel-caption">Sec</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sheet-rows">
+                <div class="sheet-row" id="enabledRow">
+                    <span>Alarm</span>
+                    <button type="button" id="enabledToggle" class="switch on" aria-label="Alarm enabled"><span class="knob"></span></button>
+                </div>
+                <div class="sheet-row">
+                    <span>Repeat</span>
+                    <span class="sheet-value" id="repeatValue">Daily</span>
+                </div>
+                <div class="sheet-row">
+                    <span>Label</span>
+                    <input id="labelInput" class="sheet-label" maxlength="40" value="Alarm" autocomplete="off">
+                </div>
+                <div class="sheet-row">
+                    <span>Sound</span>
+                    <button type="button" class="sheet-value-btn" id="soundRow">Radial ›</button>
+                </div>
+                <div class="sheet-row">
+                    <span>Snooze</span>
+                    <button type="button" id="snoozeToggle" class="switch on" aria-label="Snooze enabled"><span class="knob"></span></button>
+                </div>
+                <div class="sheet-row">
+                    <span>Snooze Duration</span>
+                    <button type="button" class="sheet-value-btn accent" id="snoozeDurRow">9 min</button>
+                </div>
+            </div>
+            <p class="sheet-hint" id="sheetHint"></p>
+        </div>
+    </div>
+
+    <!-- Ringing overlay -->
+    <div id="ringOverlay" class="ring-overlay hidden">
+        <div class="ring-card">
+            <div class="ring-bell">🔔</div>
+            <h2 id="ringLabel">Morning Ritual</h2>
+            <p id="ringTime">7:30 AM EAT</p>
+            <div class="ring-buttons">
+                <button type="button" id="ringSnooze" class="ring-btn ring-snooze">Snooze 9 min</button>
+                <button type="button" id="ringStop" class="ring-btn ring-stop">Stop</button>
+            </div>
+        </div>
     </div>
 
     <!-- Install Prompt (PWA) -->
