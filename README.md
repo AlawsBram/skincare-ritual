@@ -10,14 +10,15 @@ A minimal, installable PWA for tracking a daily morning and evening skincare rou
 - **Notifications** — daily reminders at 7:30 AM and 8:30 PM
 - **Offline** — works with no connection via a service worker
 - **Installable** — add to your home screen on Android or iOS
-- **Dark mode** — follows your system appearance
+- **Light / dark mode toggle** — header button switches theme, remembers your choice, defaults to your system appearance
 
 ## Files
 
 | File | Purpose |
 |---|---|
 | `index.html` | Markup and PWA meta tags |
-| `style.css` | Design system, layout, dark mode |
+| `style.css` | Design system, layout, light/dark themes |
+| `vercel.json` | Vercel headers — keeps `sw.js` / `index.html` fresh so updates reach phones |
 | `script.js` | Checklist, audio, storage, alarms, install |
 | `manifest.json` | PWA manifest |
 | `sw.js` | Service worker — caching and notifications |

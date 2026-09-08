@@ -3,13 +3,14 @@
    ------------------------------------------------------------
    Sections:
      1. Config
-     2. Audio feedback (Web Audio API — no MP3 needed)
-     3. Storage + midnight reset
-     4. Checkbox wiring & progress
-     5. Notifications / alarms
-     6. PWA install
-     7. Service worker
-     8. Debug helpers  <-- see TESTING NOTES at the bottom
+     2. Theme (light / dark toggle)
+     3. Audio feedback (Web Audio API — no MP3 needed)
+     4. Storage + midnight reset
+     5. Checkbox wiring & progress
+     6. Notifications / alarms
+     7. PWA install
+     8. Service worker
+     9. Debug helpers  <-- see TESTING NOTES at the bottom
    ============================================================ */
 
 (function () {
@@ -18,6 +19,7 @@
     /* ---------- 1. Config ---------- */
 
     var STORAGE_KEY = 'skincare-ritual-state';
+    var THEME_KEY = 'skincare-ritual-theme';
 
     var ALARMS = [
         { id: 'morning', hour: 7,  minute: 30, title: '☀️ Morning Ritual',
@@ -28,7 +30,75 @@
 
     var alarmTimers = [];
 
-    /* ---------- 2. Audio feedback ---------- */
+    /* ---------- 2. Theme (light / dark toggle) ---------- */
+
+    // System preference at load time. Used when the user has never toggled.
+    function systemTheme() {
+        return (window.matchMedia &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches)
+            ? 'dark'
+            : 'light';
+    }
+
+    function currentTheme() {
+        return document.documentElement.getAttribute('data-theme') || systemTheme();
+    }
+
+    // Apply a theme: swap the CSS variables (via data-theme), keep the
+    // browser chrome (status bar / task switcher) matching via theme-color,
+    // and update the toggle button's icon.
+    function applyTheme(theme, save) {
+        theme = theme === 'dark' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+
+        var meta = document.getElementById('themeColorMeta');
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#100f0e' : '#f7f6f3');
+
+        var btn = document.getElementById('themeBtn');
+        if (btn) {
+            // Show the mode you'll switch TO: sun in dark mode, moon in light.
+            var icon = theme === 'dark' ? '☀️' : '🌙';
+            if (btn.textContent.trim() !== icon) {
+                btn.textContent = icon;
+                // Re-trigger the pop animation on each swap
+                btn.classList.remove('swap');
+                void btn.offsetWidth;
+                btn.classList.add('swap');
+            }
+            btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+            btn.setAttribute('aria-label', btn.title);
+        }
+
+        if (save) {
+            try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+        }
+    }
+
+    function initTheme() {
+        // The inline script in <head> already set data-theme before first
+        // paint — here we just sync the button icon and wire up the toggle.
+        applyTheme(currentTheme(), false);
+
+        var btn = document.getElementById('themeBtn');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                applyTheme(currentTheme() === 'dark' ? 'light' : 'dark', true);
+            });
+        }
+
+        // No saved choice yet → keep following the OS if it changes
+        // (e.g. automatic sunset/sunrise appearance on the phone).
+        try {
+            if (!localStorage.getItem(THEME_KEY) && window.matchMedia) {
+                var mq = window.matchMedia('(prefers-color-scheme: dark)');
+                var onChange = function (e) { applyTheme(e.matches ? 'dark' : 'light', false); };
+                if (mq.addEventListener) mq.addEventListener('change', onChange);
+                else if (mq.addListener) mq.addListener(onChange);  // older Safari
+            }
+        } catch (e) {}
+    }
+
+    /* ---------- 3. Audio feedback ---------- */
 
     var audioCtx = null;
 
@@ -119,7 +189,7 @@
         });
     }
 
-    /* ---------- 3. Storage + midnight reset ---------- */
+    /* ---------- 4. Storage + midnight reset ---------- */
 
     // Local calendar date, e.g. "2026-08-04". Using local time (not toISOString,
     // which is UTC) is what makes the reset land at *your* midnight.
@@ -182,7 +252,7 @@
         }, midnight - now + 1000);            // +1s of slack
     }
 
-    /* ---------- 4. Checkbox wiring & progress ---------- */
+    /* ---------- 5. Checkbox wiring & progress ---------- */
 
     function updateProgress(routine) {
         var boxes = document.querySelectorAll('.' + routine + '-checkbox');
@@ -234,7 +304,7 @@
         updateProgress('evening');
     }
 
-    /* ---------- 5. Notifications / alarms ---------- */
+    /* ---------- 6. Notifications / alarms ---------- */
 
     var statusTimer = null;
 
@@ -392,7 +462,7 @@
         scheduleAlarms();
     });
 
-    /* ---------- 6. PWA install ---------- */
+    /* ---------- 7. PWA install ---------- */
 
     var deferredPrompt = null;
 
@@ -457,7 +527,7 @@
         });
     }
 
-    /* ---------- 7. Service worker ---------- */
+    /* ---------- 8. Service worker ---------- */
 
     function initServiceWorker() {
         if (!('serviceWorker' in navigator)) return;
@@ -471,6 +541,7 @@
     /* ---------- Boot ---------- */
 
     function init() {
+        initTheme();
         initCheckboxes();
         initNotifications();
         initInstall();
@@ -485,7 +556,7 @@
     }
 
     /* ============================================================
-       8. TESTING NOTES — open the browser console and run these
+       9. TESTING NOTES — open the browser console and run these
        ============================================================
 
        Everything below is exposed on `window.skincareDebug`.
@@ -531,6 +602,10 @@
     window.skincareDebug = {
         chime: playChime,
         complete: playComplete,
+        theme: currentTheme,
+        toggleTheme: function () {
+            applyTheme(currentTheme() === 'dark' ? 'light' : 'dark', true);
+        },
 
         testNotification: function () {
             fireNotification('🧪 Test', 'If you can read this, notifications work.', 'test');
